@@ -25,11 +25,11 @@ TODO: Add screenshot/animated GIF of process
   - **Open in JupyterLab**: Right-click on the `.ipynb` file and select "Open with Jupyter Notebook".
   - **Open in VS Code**: Right-click on the `.ipynb` file and select "Open With" and find "Visual Studio Code".
   - *Note*. You may need to select "Open with Other Application..." and search for your desired application if you do not see it in the initial list.
-TODO: Add screenshot/animated GIF of process  
+TODO: Add screenshot/animated GIF of process
 
 ## Troubleshooting
 
 If you have trouble with Codio, find **IT Service Desk** under the **Help** menu in D2L Brightspace.
 <img src="assets/it_service_desk.png" width="500" alt="Accessing IT Service Desk from D2L Brightspace">
 
-If you there is a problem with these instructions, please review [open issues](https://github.com/cs580dl/0-1/issues) in the **CS 580 0-1 Activity** repository. If you find an issue that is not already reported, please create a [new issue] with details about the problem you encountered.
+If you there is a problem with these instructions, please review [open issues](https://github.com/cs580dl/0-1/issues) in the **CS 580 0-1 Activity** repository. If you find an issue that is not already reported, please create a new issue with details about the problem you encountered.
