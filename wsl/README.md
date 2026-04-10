@@ -1,3 +1,5 @@
+# Under construction. Do NOT follow instructions yet!!!
+
 # CS 580 – Windows Subsystem for Linux (WSL) Setup
 
 These instructions set up a Linux development environment on **Windows 10 (21H2+)** or **Windows 11** using WSL 2.
