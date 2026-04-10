@@ -1,5 +1,3 @@
-# Under Construction: Do NOT follow these instructions yet!
-
 # Activity 0-1: Setup System for CS 580
 
 To complete course activities (i.e., assignments and projects), you will need a properly configured deep learning environment.
@@ -7,7 +5,7 @@ Below are the options available to you, along with their advantages and disadvan
 
 | # | Platform | Description | Advantages | Disadvantages |
 |:-:|----------|-------------|------------|---------------|
-| 1 | **Codio VM** | A pre-built, cloud-based, Linux virtual machine accessible through a web browser from our course site. | - No setup required<br>- Instructor can review your work directly<br>- SNHU Tech Support | - Time-out/loss of work<br>- Performance limitations, especially on weekends<br>- Less control over the environment<br>- Requires a stable internet connection<br> |
+| 1 | Codio | A pre-built, cloud-based, Linux virtual machine accessible through a web browser from our course site. | - No setup required<br>- Instructor can review your work directly<br>- SNHU Tech Support | - Time-out/loss of work<br>- Performance limitations, especially on weekends<br>- Less control over the environment<br>- Requires a stable internet connection<br> |
 | 2 | Local Setup | Setting up a deep learning environment on your personal computer. | - Full control<br>- Potentially better performance for training models<br>- Can work offline<br>- Great skill to develop | - Requires more time and effort to set up<br>- May encounter compatibility issues<br>- Requires a reasonably powerful computer |
 | 3 | Web | Using cloud platforms like Kaggle notebooks or Google Colab for development and training. | - No local setup required<br>- Access to powerful hardware (e.g., GPUs)<br>- Easy to share notebooks and collaborate | - Requires a stable internet connection<br>- May have usage limits or costs associated with heavy usage<br>- Less control over the environment |
 
@@ -21,14 +19,15 @@ Follow the guide for your operating platform to set up your deep learning enviro
 
 | # | Platform | Processor | Setup Instructions | Status |
 |:-:|----------|-----------|-------------------|--------|
-| 1 | Codio VM | CPU-only  | [codio/README.md](codio/README.md) | under construction |
+| 1 | Codio    | CPU-only  | [codio/README.md](codio/README.md) | under construction |
 | 2 | Win+WSL  | CPU+GPU   | [wsl/README.md](wsl/README.md)     | under construction |
-| 3 | Linux    | CPU+GPU   | [nix/README.md](nix/README.md)     | not started |
-| 4 | Win-only | CPU-only  | [win/README.md](win/README.md)     | not started |
-| 5 | macOS    | CPU-only  | [mac/README.md](mac/README.md)     | not started |
+| 3 | Kaggle / Colab  | CPU+GPU | [web/README.md](web/README.md) | under construction |
+| 4 | Linux    | CPU+GPU   | [nix/README.md](nix/README.md)     | not started |
+| 5 | Win-only | CPU-only  | [win/README.md](win/README.md)     | not started |
+| 6 | macOS    | CPU-only  | [mac/README.md](mac/README.md)     | not started |
 
 *Note.* Platforms are listed in development order. If you have need for a platform that is not yet available, please let us know by opening an issue in this repository or posting in the course General Questions discussion board.
 
 ## Need Help?
 
-Open an issue in this repository or post in the course discussion board.
+If you are CS 580 student, open an issue in this repository or post in the course General Questions discussion board.
