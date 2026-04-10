@@ -21,9 +21,9 @@ TODO: Add screenshot/animated GIF of process
 - [ ] 7. In the File Explorer window, double-click on desired module folder (e.g., Module 1 Assignments, Module 7 Project). If more than one activity in  module, double-click on the activity.
 <img src="assets/cs580_codio_mod1.png" width="500" alt="Accessing Module 1 Assignments folder on Codio VM">
 
-- [ ] 8. Open the Jupyter Notebook file (`.ipynb`) for the activity using your preferred development environment:
-  - **Open in JupyterLab**: Right-click on the `.ipynb` file and select "Open with Jupyter Notebook".
-  - **Open in VS Code**: Right-click on the `.ipynb` file and select "Open with Visual Studio Code".
+- [ ] 8. Open the Jupyter Notebook file (`.ipynb`) for the activity using your preferred development environment. Right-click on the `.ipynb` file and select::
+  - Open With Jupyter Notebook
+  - Open with "Visual Studio Code"
   - *Note*. You may need to select "Open With >" and then "Open with Other Application..." and search for your desired application if you do not see it in the initial list.
 <img src="assets/cs580_codio_act1.png" width="500" alt="Accessing Activity 1-2 Jupyter Notebook on Codio VM">
 
