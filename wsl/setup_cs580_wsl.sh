@@ -23,6 +23,8 @@ Features
 - Installs dependencies from remote requirements files
 - Installs CPU-only PyTorch separately when no GPU is detected
 - Configures `direnv` to auto-activate/deactivate the venv in `~/cs580`
+- Configures a VS Code `cs580` profile and installs course extensions
+- Opens VS Code in `~/cs580` using the `cs580` profile
 - Verifies installation by importing core libraries
 
 Requirements
@@ -31,6 +33,8 @@ Requirements
 - Sudo privileges (user must be in sudoers)
 - Internet connection
 - Optional: NVIDIA GPU with drivers installed (for GPU path)
+- VS Code already installed on the Windows host
+- VS Code `code` command available in the WSL shell PATH
 
 Usage
 -----
@@ -50,6 +54,7 @@ Configuration
 - REPO: Base URL for remote requirements files
 - CPU_REQS: Requirements file for CPU-only setup
 - GPU_REQS: Requirements file for GPU-enabled setup
+- VSCODE_PROFILE: Name of the VS Code profile used for the course
 
 Behavior
 --------
@@ -65,21 +70,27 @@ Behavior
    - CPU path: PyTorch (CPU-only) via custom index + CPU requirements
    - GPU path: All dependencies from GPU requirements file
 10. Configures `direnv` to activate the venv automatically in `~/cs580`
-11. Verifies installation via import test and GPU-aware checks
+11. Configures VS Code profile, installs course extensions, and opens `~/cs580`
+12. Verifies installation via import test and GPU-aware checks
 
 Assumptions
 -----------
 - requirements_cpu.txt does NOT include torch/torchvision
 - requirements_gpu.txt DOES include torch/torchvision
 - Remote requirements files are accessible via the REPO URL
+- VS Code is already installed on Windows and reachable from WSL via `code`
 
 Notes
 -----
 - The virtual environment is created in `~/cs580/cs580`
-- All user-level configurations (Git, venv, direnv) are owned by the invoking user
+- All user-level configurations (Git, venv, direnv, VS Code profile usage)
+  are owned by the invoking user
 - System packages are installed via sudo and may prompt for a password
 - PyTorch CPU wheels require a custom index and are installed separately
 - `direnv` auto-activation applies in `~/cs580` and its subdirectories
+- VS Code profile settings are not fully scripted here; this script installs
+  the requested extensions into the named profile and launches the folder
+  with that profile
 
 Exit Behavior
 -------------
@@ -94,6 +105,7 @@ set -euo pipefail
 PY_VER="3.12"
 VENV_NAME="cs580"
 BASE_DIR="$HOME/cs580"
+VSCODE_PROFILE="cs580"
 
 REPO="https://raw.githubusercontent.com/cs580dl/0-1/refs/heads/main/wsl/"
 CPU_REQS="requirements_cpu.txt"
@@ -264,6 +276,46 @@ EOF
   direnv allow
 }
 
+configure_vscode() {
+  echo ">> Configuring VS Code profile and extensions..."
+
+  if ! command -v code &>/dev/null; then
+    echo "⚠️  VS Code 'code' command not found in WSL PATH."
+    echo "   Skipping VS Code configuration."
+    echo "   Make sure VS Code is installed on Windows and the WSL 'code' command is available."
+    return 0
+  fi
+
+  mkdir -p "$BASE_DIR/.vscode"
+
+  cat > "$BASE_DIR/.vscode/settings.json" <<EOF
+{
+  "python.defaultInterpreterPath": "${BASE_DIR}/${VENV_NAME}/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "jupyter.notebookFileRoot": "${workspaceFolder}"
+}
+EOF
+
+  echo ">> Opening VS Code in $BASE_DIR..."
+  code "$BASE_DIR"
+
+  echo ">> Opening VS Code in $BASE_DIR with profile '$VSCODE_PROFILE'..."
+  code --profile "$VSCODE_PROFILE" "$BASE_DIR"
+
+  echo ">> Installing VS Code extensions into profile '$VSCODE_PROFILE'..."
+  code --profile "$VSCODE_PROFILE" --install-extension ms-vscode-remote.remote-wsl
+  code --profile "$VSCODE_PROFILE" --install-extension ms-vscode-remote.remote-wsl-recommender
+  code --profile "$VSCODE_PROFILE" --install-extension ms-python.python
+  code --profile "$VSCODE_PROFILE" --install-extension ms-python.autopep8
+  code --profile "$VSCODE_PROFILE" --install-extension ms-toolsai.jupyter
+  code --profile "$VSCODE_PROFILE" --install-extension ms-toolsai.datawrangler
+  code --profile "$VSCODE_PROFILE" --install-extension mechatroner.rainbow-csv
+  code --profile "$VSCODE_PROFILE" --install-extension bierner.github-markdown-preview
+  code --profile "$VSCODE_PROFILE" --install-extension streetsidesoftware.code-spell-checker
+  code --profile "$VSCODE_PROFILE" --install-extension hediet.vscode-drawio
+  code --profile "$VSCODE_PROFILE" --install-extension tomoki1207.pdf
+}
+
 verify_venv() {
   echo ">> Verifying virtual environment setup..."
 
@@ -319,8 +371,10 @@ create_venv
 setup_venv
 set_cuda_paths
 configure_direnv
+configure_vscode
 verify_venv
 
 echo "✅ CS 580 WSL environment setup complete!"
 echo ">> Open a new terminal, or run: source ~/.bashrc"
 echo ">> Then cd ~/cs580 to auto-activate the CS 580 virtual environment."
+echo ">> VS Code has been configured to use the '$VSCODE_PROFILE' profile for CS 580."

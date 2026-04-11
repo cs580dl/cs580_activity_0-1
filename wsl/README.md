@@ -1,8 +1,15 @@
-# Under construction. Do NOT follow instructions yet!!!
-
 # CS 580 – Windows Subsystem for Linux (WSL) Setup
 
 These instructions will guide you through setting up a WSL 2 environment on Windows, which allows deep learning applications to use your GPU to accelerate training and inference. This setup is recommended for students with NVIDIA GPUs who want to run deep learning workloads on their local machines.
+
+**Table of Contents**
+- [CS 580 – Windows Subsystem for Linux (WSL) Setup](#cs-580--windows-subsystem-for-linux-wsl-setup)
+  - [Verify Prerequisites](#verify-prerequisites)
+  - [Install or Update NVIDIA GPU Driver](#install-or-update-nvidia-gpu-driver)
+  - [Install VS Code in Windows](#install-vs-code-in-windows)
+  - [Install WSL 2](#install-wsl-2)
+  - [Setup Ubuntu-mscs](#setup-ubuntu-mscs)
+  - [Install VS Code Extensions](#install-vs-code-extensions)
 
 ## Verify Prerequisites
 
@@ -13,6 +20,8 @@ These instructions assume you have the hardware and software listed below:
 - Windows 11 or Windows 10 2022 | Version 2022 or higher (Build 19044 or higher).
   - If older version, [update Win 10 now](https://www.microsoft.com/en-us/software-download/windows10).
   - If you cannot update Windows, [manually install](https://learn.microsoft.com/en-us/windows/wsl/install-manual) WSL 2 (Steps 1-5) and Ubuntu-24.04 (Step 6).
+
+- Visual Studio Code (recommended) or other IDE that supports WSL development. If you select another IDE, you will need to configure it on your own to work with WSL and your deep learning frameworks.
 
 If you do not know which version/build of Windows you have, open **Settings → System → About** and check the **Windows info** section or run the command `winver` in PowerShell.
 
@@ -46,6 +55,10 @@ Follow these steps to install or update your NVIDIA GPU driver:
 
 3. Click the "View" button and then the "Download" button to download your selected driver. Do NOT enable automatic driver updates until you have completed CS 580. Automatic updates may install a driver version that is incompatible with the deep learning frameworks, which could cause errors when running your assignments and projects.
 
+## Install VS Code in Windows
+
+If VS Code is not installed in Windows, follow instructions at https://code.visualstudio.com/docs/setup/windows
+
 ## Install WSL 2
 
 Open **PowerShell as Administrator** and run the following commands:
@@ -63,8 +76,6 @@ wsl.exe --set-default-version 2
 wsl.exe --set-default Ubuntu24-mscs
 ```
 
----
-
 ## Setup Ubuntu-mscs
 
 1. Launch **Ubuntu-mscs** from the Start menu (or type `wsl.exe -d Ubuntu-mscs` in PowerShell).
@@ -78,4 +89,25 @@ chmod +x setup_cs580.sh
 
 ./setup_cs580.sh
 ```
-# Scratchpad
+
+## Install VS Code Extensions
+
+1. Launch **Ubuntu-mscs** from the Start menu, Windows Terminal, or run `wsl.exe -d Ubuntu-mscs` in PowerShell.
+
+2. Execute the following commands in order to initialize VS Code for WSL:
+
+```bash
+code ~/cs580
+code --profile "cs580" ~/cs580
+code --profile "cs580" --install-extension ms-vscode-remote.remote-wsl
+code --profile "cs580" --install-extension ms-vscode-remote.remote-wsl-recommender
+code --profile "cs580" --install-extension ms-python.python
+code --profile "cs580" --install-extension ms-python.autopep8
+code --profile "cs580" --install-extension ms-toolsai.jupyter
+code --profile "cs580" --install-extension ms-toolsai.datawrangler
+code --profile "cs580" --install-extension mechatroner.rainbow-csv
+code --profile "cs580" --install-extension bierner.github-markdown-preview
+code --profile "cs580" --install-extension streetsidesoftware.code-spell-checker
+code --profile "cs580" --install-extension hediet.vscode-drawio
+code --profile "cs580" --install-extension tomoki1207.pdf
+```

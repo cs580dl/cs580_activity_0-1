@@ -11,5 +11,5 @@ jupyterlab
 notebook
 ipykernel
 ipywidgets
-# TODO: Install torch and torchvision separately in cs580 venv with
+# torch and torchvision installed separately in setup script with
 # pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
