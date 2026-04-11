@@ -1,3 +1,7 @@
+***Note for students***: Configuring a deep learning environment, especially with GPU support, is a complex task. In addition, the procedures and scripts in this repository are under active development and have only been tested on my personal machine.
+
+I recommended [scheduling a one-on-one session](https://outlook.office.com/bookwithme/user/2de851a6a5054ec4a36ee18211bb3f86%40snhu.edu?anonymous&ismsaljsauthenabled=true) with me to complete the setup process. This will allow me to provide real-time guidance and troubleshooting support, which can be invaluable when dealing with potential issues that may arise during installation. In addition, doing it right the first time is much more efficient than trying to fix a broken setup later on.
+
 # Activity 0-1: Setup System for CS 580
 
 To complete course activities (i.e., assignments and projects), you will need a properly configured deep learning environment.
@@ -20,7 +24,7 @@ Follow the guide for your operating platform to set up your deep learning enviro
 | # | Platform | Processor | Setup Instructions | Status |
 |:-:|----------|-----------|-------------------|--------|
 | 1 | Codio    | CPU-only  | [codio/README.md](codio/README.md) | Complete except for student process and view of Codio dashboard page. Request a student to take some screenshots. |
-| 2 | Win+WSL  | CPU+GPU   | [wsl/README.md](wsl/README.md)     | not started |
+| 2 | Win+WSL  | CPU+GPU   | [wsl/README.md](wsl/README.md)     | complete except for VS Code + extensions |
 | 3 | Kaggle / Colab  | CPU+GPU | [web/README.md](web/README.md) | not started |
 | 4 | Linux    | CPU+GPU   | [nix/README.md](nix/README.md)     | not started |
 | 5 | Win-only | CPU-only  | [win/README.md](win/README.md)     | not started |

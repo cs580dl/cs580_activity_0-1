@@ -19,9 +19,10 @@ Features
 - Selects CPU or GPU dependency set automatically
 - Installs specified Python version and common development tools
 - Configures Git global username and email
-- Creates and activates a virtual environment
+- Creates a virtual environment in `~/cs580/cs580`
 - Installs dependencies from remote requirements files
 - Installs CPU-only PyTorch separately when no GPU is detected
+- Configures `direnv` to auto-activate/deactivate the venv in `~/cs580`
 - Verifies installation by importing core libraries
 
 Requirements
@@ -45,6 +46,7 @@ Configuration
 -------------
 - PY_VER: Python version to install (default: 3.12)
 - VENV_NAME: Name of the virtual environment directory
+- BASE_DIR: Root course directory created in the user's home directory
 - REPO: Base URL for remote requirements files
 - CPU_REQS: Requirements file for CPU-only setup
 - GPU_REQS: Requirements file for GPU-enabled setup
@@ -57,12 +59,13 @@ Behavior
 4. Updates system packages and installs dependencies
 5. Installs Python and pip
 6. Prompts user for Git configuration
-7. Creates and activates a virtual environment
-8. Installs:
+7. Creates `~/cs580` and clones starter repo `0-0`
+8. Creates a virtual environment in `~/cs580/cs580`
+9. Installs:
    - CPU path: PyTorch (CPU-only) via custom index + CPU requirements
    - GPU path: All dependencies from GPU requirements file
-9. Creates a course directory structure
-10. Verifies installation via import test and GPU-aware checks
+10. Configures `direnv` to activate the venv automatically in `~/cs580`
+11. Verifies installation via import test and GPU-aware checks
 
 Assumptions
 -----------
@@ -72,14 +75,15 @@ Assumptions
 
 Notes
 -----
-- The virtual environment is created in the current working directory
-- All user-level configurations (Git, venv) are owned by the invoking user
+- The virtual environment is created in `~/cs580/cs580`
+- All user-level configurations (Git, venv, direnv) are owned by the invoking user
 - System packages are installed via sudo and may prompt for a password
 - PyTorch CPU wheels require a custom index and are installed separately
+- `direnv` auto-activation applies in `~/cs580` and its subdirectories
 
 Exit Behavior
 -------------
-- Script exits immediately on any error (set -euo pipefail)
+- Script exits immediately on any error (`set -euo pipefail`)
 - Clear status messages are printed throughout execution
 
 DOC
@@ -89,6 +93,7 @@ set -euo pipefail
 # === Script Constants ===
 PY_VER="3.12"
 VENV_NAME="cs580"
+BASE_DIR="$HOME/cs580"
 
 REPO="https://raw.githubusercontent.com/cs580dl/0-1/refs/heads/main/wsl/"
 CPU_REQS="requirements_cpu.txt"
@@ -145,16 +150,17 @@ install_common_tools() {
   echo ">> Installing common tools..."
   sudo apt-get install -y \
     build-essential \
-    git \
-    curl \
-    wget \
     bzip2 \
+    curl \
+    direnv \
+    git \
     gzip \
     p7zip-full \
-    unrar \
     tar \
-    xz-utils \
+    unrar \
     unzip \
+    wget \
+    xz-utils \
     zip
 }
 
@@ -177,13 +183,27 @@ configure_git() {
   echo ">> Git configured with name: $github_name and email: $github_email"
 }
 
+create_dir_structure() {
+  echo ">> Creating course directory structure..."
+  mkdir -p "$BASE_DIR"
+  cd "$BASE_DIR"
+
+  if [[ ! -d "$BASE_DIR/0-0/.git" ]]; then
+    echo ">> Cloning starter repo into $BASE_DIR/0-0..."
+    git clone --depth 1 https://github.com/cs580dl/0-0.git
+  else
+    echo ">> Starter repo already exists at $BASE_DIR/0-0. Skipping clone."
+  fi
+}
+
 create_venv() {
-  echo ">> Creating virtual environment in $VENV_NAME..."
+  echo ">> Creating virtual environment in $BASE_DIR/$VENV_NAME..."
+  cd "$BASE_DIR"
   "python${PY_VER}" -m venv "$VENV_NAME"
 
   echo ">> Activating virtual environment..."
   # shellcheck disable=SC1091
-  source "$VENV_NAME/bin/activate"
+  source "$BASE_DIR/$VENV_NAME/bin/activate"
 }
 
 setup_venv() {
@@ -205,11 +225,43 @@ setup_venv() {
   rm -f /tmp/requirements.txt
 }
 
-create_dir_structure() {
-  echo ">> Creating directory structure..."
-  mkdir -p cs580
-  cd cs580
-  git clone --depth 1 https://github.com/cs580dl/0-0.git
+set_cuda_paths() {
+  if [[ "$HAS_GPU" == "true" ]]; then
+    echo ">> Configuring CUDA library paths for the virtual environment..."
+
+    local site_packages
+    site_packages="$(python -c "import site; print(site.getsitepackages()[0])")"
+
+    local cuda_ld_path
+    cuda_ld_path="${site_packages}/nvidia/cuda_nvrtc/lib:${site_packages}/nvidia/cuda_runtime/lib:${site_packages}/nvidia/cudnn/lib:${site_packages}/nvidia/cublas/lib:${site_packages}/nvidia/cusolver/lib:${site_packages}/nvidia/cusparse/lib:\${LD_LIBRARY_PATH:-}"
+
+    if ! grep -q "cuda_nvrtc" "$VIRTUAL_ENV/bin/activate"; then
+      echo "export LD_LIBRARY_PATH=${cuda_ld_path}" >> "$VIRTUAL_ENV/bin/activate"
+    fi
+  fi
+}
+
+configure_direnv() {
+  echo ">> Configuring direnv for automatic venv activation..."
+
+  if ! grep -Fq 'eval "$(direnv hook bash)"' "$HOME/.bashrc"; then
+    {
+      echo ""
+      echo "# Added by setup_cs580.sh for CS 580 auto-activation"
+      echo 'eval "$(direnv hook bash)"'
+    } >> "$HOME/.bashrc"
+    echo ">> Added direnv hook to ~/.bashrc"
+  else
+    echo ">> direnv hook already present in ~/.bashrc"
+  fi
+
+  cat > "$BASE_DIR/.envrc" <<EOF
+source "$BASE_DIR/$VENV_NAME/bin/activate"
+EOF
+
+  echo ">> Allowing direnv in $BASE_DIR..."
+  cd "$BASE_DIR"
+  direnv allow
 }
 
 verify_venv() {
@@ -260,11 +312,15 @@ detect_gpu
 
 update_system
 install_common_tools
-configure_git
 install_python
+configure_git
+create_dir_structure
 create_venv
 setup_venv
-create_dir_structure
+set_cuda_paths
+configure_direnv
 verify_venv
 
 echo "✅ CS 580 WSL environment setup complete!"
+echo ">> Open a new terminal, or run: source ~/.bashrc"
+echo ">> Then cd ~/cs580 to auto-activate the CS 580 virtual environment."
