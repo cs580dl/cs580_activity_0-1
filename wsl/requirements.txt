@@ -13,5 +13,5 @@ ipykernel
 ipywidgets
 
 # Platform / hardware / accelerator-sensitive
-tensorflow>=2.20.0
-torch>=2.9.1
+# tensorflow>=2.20.0
+# torch>=2.9.1

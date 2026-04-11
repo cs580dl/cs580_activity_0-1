@@ -2,110 +2,81 @@
 
 # CS 580 – Windows Subsystem for Linux (WSL) Setup
 
-These instructions set up a Linux development environment on **Windows 10 (21H2+)** or **Windows 11** using WSL 2.
+These instructions will guide you through setting up a WSL 2 environment on Windows, which allows deep learning applications to use your GPU to accelerate training and inference. This setup is recommended for students with NVIDIA GPUs who want to run deep learning workloads on their local machines.
 
----
+## Verify Prerequisites
 
-## 1. Enable WSL 2
+These instructions assume you have the hardware and software listed below:
 
-Open **PowerShell as Administrator** and run:
+- NVIDIA® GPU card with CUDA® architectures 3.5, 5.0, 6.0, 7.0, 7.5, 8.0 and higher. See the list of [CUDA®-enabled GPU cards](https://developer.nvidia.com/cuda-gpus).
+
+- Windows 11 or Windows 10 2022 | Version 2022 or higher (Build 19044 or higher).
+  - If older version, [update Win 10 now](https://www.microsoft.com/en-us/software-download/windows10).
+  - If you cannot update Windows, [manually install](https://learn.microsoft.com/en-us/windows/wsl/install-manual) WSL 2 (Steps 1-5) and Ubuntu-24.04 (Step 6).
+
+If you do not know which version/build of Windows you have, open **Settings → System → About** and check the **Windows info** section or run the command `winver` in PowerShell.
+
+If you do not have or cannot install these requirements, follow **Windows CPU-only** setup instructions in [win/README.md](win/README.md).
+
+## Install or Update NVIDIA GPU Driver
+
+If you already have an NVIDIA GPU driver installed, run the following command in PowerShell and note your NVIDIA GPU full product name and driver version information:
 
 ```powershell
-wsl --install
+nvidia-smi
 ```
 
-This command:
-- Enables the WSL and Virtual Machine Platform Windows features
-- Installs the WSL 2 Linux kernel
-- Sets WSL 2 as the default version
-- Installs **Ubuntu** as the default Linux distribution
+<img src="assets/nvidia_smi_ps.png" width="500" alt="Checking NVIDIA GPU and driver information with nvidia-smi command in PowerShell">
 
-Restart your computer when prompted.
+If the command is recognized and shows your GPU and driver information, check that your driver version is 528.33 or higher. If it is, skip to the [Install WSL 2](#install-wsl-2) section.
 
-> **Already have WSL 1?** Upgrade to WSL 2 with:
-> ```powershell
-> wsl --set-default-version 2
-> wsl --set-version Ubuntu 2
-> ```
+If the command is not recognized, check in **Device Manager** (search in Start menu) under the **Display adapters** section. If you see an NVIDIA product listed, note the full product name. An example shown highlighted in yellow below.
 
----
+<img src="assets/device_manager.png" width="500" alt="Checking Device Manager for NVIDIA GPU information">
 
-## 2. First-Time Ubuntu Setup
+If your driver version is less (older) than 528.33, or if the `nvidia-smi` command is not recognized, you will need to install a recent NVIDIA driver for your GPU.
 
-1. Launch **Ubuntu** from the Start menu (or type `wsl` in PowerShell).
-2. Create a Unix username and password when prompted.
+Follow these steps to install or update your NVIDIA GPU driver:
 
-Update packages:
+1. Go to the [NVIDIA Manual Driver Search](https://www.nvidia.com/Download/index.aspx) page.
 
-```bash
-sudo apt update && sudo apt upgrade -y
+2. Use the **Manual Driver Search** to find the appropriate driver for your GPU and Windows version. Using the example from the screenshots above, you would select:
+
+<img src="assets/nvidia_driver_search.png" width="500" alt="Searching for NVIDIA GPU driver on NVIDIA Manual Driver Search page">
+
+3. Click the "View" button and then the "Download" button to download your selected driver. Do NOT enable automatic driver updates until you have completed CS 580. Automatic updates may install a driver version that is incompatible with the deep learning frameworks, which could cause errors when running your assignments and projects.
+
+## Install WSL 2
+
+Open **PowerShell as Administrator** and run the following commands:
+
+```powershell
+wsl.exe --install -d Ubuntu-24.04 --name Ubuntu-mscs
 ```
 
----
+When prompted, enter a username and password for your new Linux user account. Remember these credentials, as you will need them to log in to your WSL environment.
 
-## 3. Install Git
+Then, type `exit` and hit \<Enter> once to exit out of your new Linux session and enter the following PowerShell commands:
 
-```bash
-sudo apt install -y git
-```
-
-Verify:
-```bash
-git --version
-```
-
-Configure:
-```bash
-git config --global user.name  "Your Name"
-git config --global user.email "you@example.com"
+```powershell
+wsl.exe --set-default-version 2
+wsl.exe --set-default Ubuntu24-mscs
 ```
 
 ---
 
-## 4. Install Python 3.10+
+## Setup Ubuntu-mscs
+
+1. Launch **Ubuntu-mscs** from the Start menu (or type `wsl.exe -d Ubuntu-mscs` in PowerShell).
+2. Enter the following commands to download and run the CS 580 setup script:
 
 ```bash
-sudo apt install -y python3 python3-pip python3-venv
+curl -o setup_cs580.sh https://raw.githubusercontent.com/cs580dl/0-1/refs/heads/main/wsl/setup_cs580_wsl.sh
+chmod +x setup_cs580.sh
+./setup_cs580.sh
 ```
 
-Verify:
-```bash
-python3 --version   # should be 3.10 or higher
-pip3 --version
-```
-
----
-
-## 5. Install Docker Desktop with WSL 2 Backend
-
-1. Download **Docker Desktop for Windows** from <https://www.docker.com/products/docker-desktop/>.
-2. During installation, ensure **"Use the WSL 2 based engine"** is checked.
-3. After installation, open Docker Desktop → **Settings → Resources → WSL Integration** and enable integration for your Ubuntu distribution.
-4. Restart Docker Desktop.
-
-Verify inside the WSL terminal:
-```bash
-docker --version
-docker run --rm hello-world
-```
-
----
-
-## 6. Install VS Code with the Remote – WSL Extension (Recommended)
-
-1. Install VS Code on **Windows** from <https://code.visualstudio.com/download>.
-2. Install the **WSL** extension (`ms-vscode-remote.remote-wsl`).
-3. From your WSL terminal, open a project folder in VS Code:
-
-```bash
-code .
-```
-
-VS Code will open in Windows but run its server inside WSL, giving you full Linux tooling.
-
----
-
-## Verification Checklist
+## Verify Installation
 
 Run these commands inside your **WSL / Ubuntu terminal** and confirm each prints a version string:
 
@@ -115,3 +86,11 @@ python3 --version
 pip3 --version
 docker --version
 ```
+
+# Scratchpad
+
+If you are uncertain whether you have a GPU, open **Device Manager** (search in Start menu) and expand the **Display adapters** section. If you see an NVIDIA product listed, you mostly likely have a GPU. If there is a warning icon next to it, you may need to update the driver. If not, you will need to use the CPU-only setup instructions in [win/README.md](win/README.md).
+
+If the command is not recognized, double check that you have an NVIDIA GPU and driver installed. Open **Device Manager** (search in Start menu) and expand the **Display adapters** section. If you see an NVIDIA product listed, you most likely have a GPU, but .
+
+or if the driver version is older than 528.33, you will need to install a recent NVIDIA  driver for your GPU. Follow these steps:
