@@ -81,11 +81,10 @@ Type exit and hit \<Enter> until the PowerShell window closes.
 
 1. Launch **Ubuntu-mscs** anew from the Start menu (or type `wsl.exe -d Ubuntu-mscs` in PowerShell).
 
-2. Copy and paste the following commands into the Ubuntu-mscs terminal to download and run the CS 580 setup script:
+2. Copy and paste the following commands into the Ubuntu-mscs terminal to download and run the CS 580 setup script.  ***Important***: Replace `your-GitHub-username` and `your-GitHub-email` with your actual GitHub username and email address.
 
 ```bash
 curl -fsSL -o setup_cs580.sh https://raw.githubusercontent.com/cs580dl/0-1/refs/heads/main/wsl/setup_cs580_wsl.sh
 chmod +x setup_cs580.sh
-./setup_cs580.sh
+./setup_cs580.sh your-GitHub-username your-GitHub-email
 ```
-
