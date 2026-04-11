@@ -388,6 +388,7 @@ setup_venv
 set_cuda_paths
 configure_vscode
 verify_venv
+rm -f ~/setup_cs580.sh
 
 echo "✅ CS 580 WSL environment setup complete!"
 echo ">> To activate the CS 580 virtual environment manually, run:"
