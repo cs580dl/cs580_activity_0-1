@@ -9,7 +9,6 @@ These instructions will guide you through setting up a WSL 2 environment on Wind
   - [Install VS Code in Windows](#install-vs-code-in-windows)
   - [Install WSL 2](#install-wsl-2)
   - [Setup Ubuntu-mscs](#setup-ubuntu-mscs)
-  - [Install VS Code Extensions](#install-vs-code-extensions)
 
 ## Verify Prerequisites
 
@@ -73,41 +72,20 @@ Then, type `exit` and hit \<Enter> once to exit out of your new Linux session an
 
 ```powershell
 wsl.exe --set-default-version 2
-wsl.exe --set-default Ubuntu24-mscs
+wsl.exe --set-default Ubuntu-mscs
 ```
+
+Type exit and hit \<Enter> until the PowerShell window closes.
 
 ## Setup Ubuntu-mscs
 
-1. Launch **Ubuntu-mscs** from the Start menu (or type `wsl.exe -d Ubuntu-mscs` in PowerShell).
+1. Launch **Ubuntu-mscs** anew from the Start menu (or type `wsl.exe -d Ubuntu-mscs` in PowerShell).
 
-2. Enter the following commands to download and run the CS 580 setup script:
+2. Copy and paste the following commands into the Ubuntu-mscs terminal to download and run the CS 580 setup script:
 
 ```bash
 curl -fsSL -o setup_cs580.sh https://raw.githubusercontent.com/cs580dl/0-1/refs/heads/main/wsl/setup_cs580_wsl.sh
-
 chmod +x setup_cs580.sh
-
 ./setup_cs580.sh
 ```
 
-## Install VS Code Extensions
-
-1. Launch **Ubuntu-mscs** from the Start menu, Windows Terminal, or run `wsl.exe -d Ubuntu-mscs` in PowerShell.
-
-2. Execute the following commands in order to initialize VS Code for WSL:
-
-```bash
-code ~/cs580
-code --profile "cs580" ~/cs580
-code --profile "cs580" --install-extension ms-vscode-remote.remote-wsl
-code --profile "cs580" --install-extension ms-vscode-remote.remote-wsl-recommender
-code --profile "cs580" --install-extension ms-python.python
-code --profile "cs580" --install-extension ms-python.autopep8
-code --profile "cs580" --install-extension ms-toolsai.jupyter
-code --profile "cs580" --install-extension ms-toolsai.datawrangler
-code --profile "cs580" --install-extension mechatroner.rainbow-csv
-code --profile "cs580" --install-extension bierner.github-markdown-preview
-code --profile "cs580" --install-extension streetsidesoftware.code-spell-checker
-code --profile "cs580" --install-extension hediet.vscode-drawio
-code --profile "cs580" --install-extension tomoki1207.pdf
-```

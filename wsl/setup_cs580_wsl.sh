@@ -290,14 +290,11 @@ configure_vscode() {
 
   cat > "$BASE_DIR/.vscode/settings.json" <<EOF
 {
-  "python.defaultInterpreterPath": "${BASE_DIR}/${VENV_NAME}/bin/python",
+  "python.defaultInterpreterPath": "\${workspaceFolder}/${VENV_NAME}/bin/python",
   "python.terminal.activateEnvironment": true,
-  "jupyter.notebookFileRoot": "${workspaceFolder}"
+  "jupyter.notebookFileRoot": "\${workspaceFolder}"
 }
 EOF
-
-  echo ">> Opening VS Code in $BASE_DIR..."
-  code "$BASE_DIR"
 
   echo ">> Opening VS Code in $BASE_DIR with profile '$VSCODE_PROFILE'..."
   code --profile "$VSCODE_PROFILE" "$BASE_DIR"
