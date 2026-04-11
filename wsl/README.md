@@ -76,6 +76,6 @@ curl -fsSL -o setup_cs580.sh https://raw.githubusercontent.com/cs580dl/0-1/refs/
 
 chmod +x setup_cs580.sh
 
-sudo ./setup_cs580.sh
+./setup_cs580.sh
 ```
 # Scratchpad
