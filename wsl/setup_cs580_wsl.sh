@@ -25,8 +25,8 @@ Features
 - Installs dependencies from remote requirements files
 - Installs CPU-only PyTorch separately when no GPU is detected
 - Configures `direnv` to auto-activate/deactivate the venv in `~/cs580`
-- Configures a VS Code `cs580` profile and installs course extensions
-- Opens VS Code in `~/cs580` using the `cs580` profile
+- Configures the shell prompt to display `(cs580)` when the venv is active
+- Configures VS Code workspace settings and opens `~/cs580` using the `cs580` profile
 - Verifies installation by importing core libraries
 
 Requirements
@@ -75,8 +75,9 @@ Behavior
     - CPU path: PyTorch (CPU-only) via custom index + CPU requirements
     - GPU path: All dependencies from GPU requirements file
 11. Configures `direnv` to activate the venv automatically in `~/cs580`
-12. Configures VS Code profile, installs course extensions, and opens `~/cs580`
-13. Verifies installation via import test and GPU-aware checks
+12. Configures Bash so the prompt shows `(cs580)` when the venv is active
+13. Configures VS Code workspace settings and opens `~/cs580`
+14. Verifies installation via import test and GPU-aware checks
 
 Assumptions
 -----------
@@ -94,9 +95,6 @@ Notes
 - System packages are installed via sudo and may prompt for a password
 - PyTorch CPU wheels require a custom index and are installed separately
 - `direnv` auto-activation applies in `~/cs580` and its subdirectories
-- VS Code profile settings are not fully scripted here; this script installs
-  the requested extensions into the named profile and launches the folder
-  with that profile
 
 Exit Behavior
 -------------
@@ -327,6 +325,30 @@ configure_direnv() {
     echo ">> direnv hook already present in ~/.bashrc"
   fi
 
+  if ! grep -Fq '# Added by setup_cs580.sh for CS 580 direnv prompt integration' "$HOME/.bashrc"; then
+    cat >> "$HOME/.bashrc" <<'EOF'
+
+# Added by setup_cs580.sh for CS 580 direnv prompt integration
+if [[ -z "${ORIGINAL_PS1:-}" ]]; then
+  ORIGINAL_PS1="$PS1"
+fi
+
+update_direnv_prompt() {
+  local base_ps1='\u@\h:\w\$ '
+  if [[ -n "${VIRTUAL_ENV_PROMPT:-}" ]]; then
+    PS1="(${VIRTUAL_ENV_PROMPT}) ${base_ps1}"
+  else
+    PS1="${base_ps1}"
+  fi
+}
+
+PROMPT_COMMAND="update_direnv_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+EOF
+    echo ">> Added direnv prompt integration to ~/.bashrc"
+  else
+    echo ">> direnv prompt integration already present in ~/.bashrc"
+  fi
+
   cat > "$BASE_DIR/.envrc" <<EOF
 source "$BASE_DIR/.venv/bin/activate"
 EOF
@@ -337,7 +359,7 @@ EOF
 }
 
 configure_vscode() {
-  echo ">> Configuring VS Code profile and extensions..."
+  echo ">> Configuring VS Code workspace settings..."
 
   if ! command -v code &>/dev/null; then
     echo "⚠️  VS Code 'code' command not found in WSL PATH."
@@ -358,19 +380,6 @@ EOF
 
   echo ">> Opening VS Code in $BASE_DIR with profile '$CRS_ID'..."
   code --profile "$CRS_ID" "$BASE_DIR"
-
-  echo ">> Installing VS Code extensions into profile '$CRS_ID'..."
-  code --profile "$CRS_ID" --install-extension ms-vscode-remote.remote-wsl
-  code --profile "$CRS_ID" --install-extension ms-vscode-remote.remote-wsl-recommender
-  code --profile "$CRS_ID" --install-extension ms-python.python
-  code --profile "$CRS_ID" --install-extension ms-python.autopep8
-  code --profile "$CRS_ID" --install-extension ms-toolsai.jupyter
-  code --profile "$CRS_ID" --install-extension ms-toolsai.datawrangler
-  code --profile "$CRS_ID" --install-extension mechatroner.rainbow-csv
-  code --profile "$CRS_ID" --install-extension bierner.github-markdown-preview
-  code --profile "$CRS_ID" --install-extension streetsidesoftware.code-spell-checker
-  code --profile "$CRS_ID" --install-extension hediet.vscode-drawio
-  code --profile "$CRS_ID" --install-extension tomoki1207.pdf
 }
 
 verify_venv() {
@@ -435,4 +444,4 @@ verify_venv
 echo "✅ CS 580 WSL environment setup complete!"
 echo ">> Open a new terminal, or run: source ~/.bashrc"
 echo ">> Then cd ~/$CRS_ID to auto-activate the CS 580 virtual environment."
-echo ">> VS Code has been configured to use the '$CRS_ID' profile for CS 580."
+echo ">> Install any desired VS Code extensions manually after setup."
