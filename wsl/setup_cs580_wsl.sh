@@ -245,6 +245,7 @@ configure_git() {
 
   git config --global user.name "$GIT_NAME"
   git config --global user.email "$GIT_EMAIL"
+  git config --global color.ui auto
 
   echo ">> Git configured with name: $GIT_NAME and email: $GIT_EMAIL"
 }
@@ -254,12 +255,6 @@ create_dir_structure() {
   mkdir -p "$BASE_DIR"
   cd "$BASE_DIR"
 
-  if [[ ! -d "$BASE_DIR/0-0/.git" ]]; then
-    echo ">> Cloning starter repo into $BASE_DIR/0-0..."
-    git clone --depth 1 https://github.com/cs580dl/0-0.git
-  else
-    echo ">> Starter repo already exists at $BASE_DIR/0-0. Skipping clone."
-  fi
 }
 
 create_venv() {
@@ -394,3 +389,6 @@ echo "✅ CS 580 WSL environment setup complete!"
 echo ">> To activate the CS 580 virtual environment manually, run:"
 echo ">> source ~/$CRS_ID/.venv/bin/activate"
 echo ">> VS Code workspace settings have been configured for '$CRS_ID'."
+
+
+https://classroom.github.com/classrooms/273656647-cs580dl-10117-classroom
